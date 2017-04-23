@@ -1,0 +1,417 @@
+<html manifest="offline.appcache">
+	<head>
+		<meta charset=utf-8>
+		<title>Block Space Threejs</title>
+		<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<style>
+			canvas {
+				border: none;
+				width: 100%;
+				height: 100%;
+				cursor: none;
+				z-index = -1;
+			}
+			h1 {
+				color: white;
+				font-size: 80px;
+				font-family: "Courier New";
+				position: absolute;
+				left: 2%;
+				top: 2%;
+			}
+			#score {
+				border: 8px outset white;
+				border-radius: 10px;
+				color: white;
+				font-size: 24px;
+				font-family: "Courier New";
+				position: absolute;
+				left: 5%;
+				margin-top: 2%;
+			}
+			#lives {
+				border: 8px outset white;
+				border-radius: 10px;
+				color: white;
+				font-size: 24px;
+				font-family: "Courier New";
+				position: absolute;
+				right: 5%;
+				margin: 2%;
+			}
+			#deathmenu {
+				position: absolute;
+				right: 5%;
+				top: 5%;
+				width: 90%;
+				height: 0%;
+				background-color: rgba(255,255,255,0.4);
+				-webkit-transition: height 2s;
+				transition: height 2s;
+				z-index: 10;
+				margin: 0px;
+			}
+			#deathtitle {
+				position:absolute;
+				top: 10%;
+				left: 20%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+			}
+			#playagain {
+				border: none;
+				background: rgba(155,155,255,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: 15%;
+				left: 35%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 1s;
+				transition: opacity 1s;
+			}
+			#playagain:hover {
+				opacity: 1.0;
+			}
+			#startmenu {
+				position: absolute;
+				right: 5%;
+				top: 5%;
+				width: 90%;
+				height: 90%;
+				background-color: rgba(255,255,255,0.4);
+				-webkit-transition: height 2s;
+				transition: height 2s;
+				z-index: 10;
+				margin: 0px;
+			}
+			@keyframes titleanim {
+				0%   {color: cyan;}
+				50%  {color: white;}
+				100% {color: cyan;}
+			}
+			#gametitle {
+				position:absolute;
+				top: 15%;
+				left: 25%;
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#gamestart {
+				border: none;
+				background: rgba(155,155,255,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: 15%;
+				left: 35%;
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 1s;
+				transition: opacity 1s;
+			}
+			#easyoption {
+			  border: none;
+				background: rgba(155,155,255,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: 15%;
+				left: 2%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+			}
+			#hardoption {
+			  border: none;
+				background: rgba(255,155,155,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: 15%;
+				right: 2%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+			}
+			#normaloption {
+			  border: none;
+				background: rgba(155,255,155,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: -100%;
+				left: 35%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+			}
+			#easyoptionafter {
+			  border: none;
+				background: rgba(155,155,255,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: 15%;
+				left: 2%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+			}
+			#hardoptionafter {
+			  border: none;
+				background: rgba(255,155,155,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: 15%;
+				right: 2%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+			}
+			#normaloptionafter {
+			  border: none;
+				background: rgba(155,255,155,0.5);
+				color: white;
+				font-weight: bolder;
+				font-size: 60px;
+				font-family: "Courier New";
+				position:absolute;
+				bottom: -100%;
+				left: 35%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+			}
+			#gameinfo1 {
+				color: white;
+				font-size: 24px;
+				font-family: "Courier New";
+				position:absolute;
+				top: 35%;
+				left: 25%;
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#gameinfo2 {
+				color: white;
+				font-size: 24px;
+				font-family: "Courier New";
+				position:absolute;
+				top: 40%;
+				left: 20%;
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#easyhighscore {
+				color: white;
+				font-size: 18px;
+				font-family: "Courier New";
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#hardhighscore {
+				color: white;
+				font-size: 18px;
+				font-family: "Courier New";
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#normalhighscore {
+				color: white;
+				font-size: 18px;
+				font-family: "Courier New";
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#easyhighscoreafter {
+				color: white;
+				font-size: 18px;
+				font-family: "Courier New";
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#normalhighscoreafter {
+				color: white;
+				font-size: 18px;
+				font-family: "Courier New";
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#hardhighscoreafter {
+				color: white;
+				font-size: 18px;
+				font-family: "Courier New";
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 2s;
+				transition: opacity 2s;
+				animation-name: titleanim;
+				animation-duration: 10s;
+				animation-iteration-count: infinite;
+			}
+			#DOsetting {
+				border: none;
+				background: rgba(255,0,0,0.35);
+				color: white;
+				font-weight: bolder;
+				font-size: 20px;
+				font-family: "Courier New";
+				position:absolute;
+				top: 1%;
+				right: 1%;
+				width: 20%;
+				height: 15%;
+				text-align: center;
+				opacity: 1.0;
+				-webkit-transition: opacity 1s;
+				transition: opacity 1s;
+			}
+			#DOsettingafter {
+				border: none;
+				background: rgba(255,0,0,0.35);
+				color: white;
+				font-weight: bolder;
+				font-size: 20px;
+				font-family: "Courier New";
+				position:absolute;
+				top: 1%;
+				right: 1%;
+				width: 20%;
+				height: 15%;
+				text-align: center;
+				opacity: 0.0;
+				-webkit-transition: opacity 1s;
+				transition: opacity 1s;
+			}
+			#ScoreBlast {
+				position:absolute;
+				top: 15%;
+				left: 45%;
+				font-size: 60px;
+				color: white;
+				text-align: center;
+				opacity: 0.0;
+				transform: scale(2,2);
+				-webkit-transition: opacity 1s, height 1s, transform 1s;
+				transition: opacity 1s, height 1s, transform 1s;
+			}
+			button {
+				width: 30%;
+				height: 30%;
+				background: rgba(255,255,255);
+			}
+			body {
+			  -webkit-touch-callout: none;
+			  -webkit-user-select: none;
+			  -khtml-user-select: none;
+			  -moz-user-select: none;
+			  -ms-user-select: none;
+		    user-select: none;
+				margin: 0;
+				background-color: rgb(0,0,0);
+				overflow: hidden;
+				position: fixed;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 id="ScoreBlast"></h1>
+		<div id="startmenu">
+		<h1 id="gametitle">Block Space</h1>
+		<button id="DOsetting" onclick="DOcontrols();">Experimental: Device Orientation Controls</button>
+		<button id="gamestart" onclick="showoptions();">Play</button>
+		<button id="easyoption" onclick="if ( lives < 1 && select == 1 ) {startgame();}easymode();">Easy <p id="easyhighscore"></p></button>
+		<button id="hardoption" onclick="if ( lives < 1 && select == 1 ) {startgame();}hardmode();">Hard <p id="hardhighscore"></p></button>
+		<button id="normaloption" onclick="if ( lives < 1 && select == 1 ) {startgame();}normalmode();">Normal <p id="normalhighscore"></p></button>
+		<p id="gameinfo1">Use A and D or the Arrow Keys to control.</p>
+		<p id="gameinfo2">Touch controls supported. Save as a Web App on Apple Devices for the best experience!</p>
+		<p id="gameinfo3"></p>
+		<p id="hardhighscore"></p>
+		<p id="easyhighscore"></p>
+	</div>
+		<div id="deathmenu">
+			<h1 id="deathtitle">Play Again?</h1>
+			<button id="DOsettingafter" onclick="DOcontrols();">Experimental: Device Orientation Controls</button>
+			<button id="playagain" onclick="showoptions();">Play</button>
+			<button id="easyoptionafter" onclick="if ( lives < 1 && select == 1 ) {startagain();}easymode();">Easy <p id="easyhighscoreafter"></p></button>
+			<button id="hardoptionafter" onclick="if ( lives < 1 && select == 1 ) {startagain();}hardmode();">Hard <p id="hardhighscoreafter"></p></button>
+			<button id="normaloptionafter" onclick="if ( lives < 1 && select == 1 ) {startagain();}normalmode();">Normal <p id="normalhighscoreafter"></p></button>
+			<p id="hardhighscoreafter"></p>
+			<p id="easyhighscoreafter"></p>
+		</div>
+		<div id="scoreBoard">
+		  <h2 id="score"></h2>
+			<h2 id="lives"></h2>
+	  </div>
+		<script src="three.js"></script>
+		<script src="OrbitControls.js"></script>
+		<script src="KeyboardDetect.js"></script>
+		<script src="game.js"></script>
+	</body>
+</html>

@@ -1,2 +1,2 @@
-# mygame2
-My new game(version 2)
+# My WebGL game
+My game made in WebGL. I used three.js.
