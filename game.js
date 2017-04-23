@@ -279,10 +279,10 @@ function touchEnded() {
           jumpVel *= 0.9;
         }
         if ( device == "Mobile" ) {
-          playerVel = ((playerX-window.innerWidth/2)/(window.innerWidth/2))*0.06;
+          playerVel = -((playerX-window.innerWidth/2)/(window.innerWidth/20))*0.06;
         }
         if ( device == "Mobile" ) {
-          playerVel = ((playerY-window.innerHeight/2)/(window.innerHeight/2))*0.06;
+          jumpVel = -((playerY-window.innerHeight/2)/(window.innerHeight/20))*0.06;
         }
         if ( DOon == true ) {
           if ( alpha > 180 ) {
