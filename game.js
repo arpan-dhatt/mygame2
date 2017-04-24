@@ -352,7 +352,7 @@ function touchEnded() {
           document.getElementById("ScoreBlast").innerHTML = Math.floor(score);
           document.getElementById("ScoreBlast").style.opacity = 1.0;
         }
-        if (  Math.floor(score) % 1000 > lvlSpeed*10 ) {
+        if (  Math.floor(score) % 1000 > lvlSpeed*100 ) {
           document.getElementById("ScoreBlast").style.opacity = 0.0;
         }
         if ( lvlSpeed < 0.8 ) {
