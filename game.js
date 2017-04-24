@@ -12,8 +12,9 @@ song.play();
 
 function touchHandler(e) {
   if(e.touches) {
-      var originX = e.touches[0].pageX;
-      var originY = e.touches[0].pageY;
+      device = "Mobile";
+      playerX = e.touches[0].pageX;
+      playerY = e.touches[0].pageY;
   }
 }
 function touchStop(e) {
@@ -278,10 +279,10 @@ function touchEnded() {
           jumpVel *= 0.9;
         }
         if ( device == "Mobile" ) {
-          playerVel = ((playerX-window.innerWidth)/(window.innerWidth/20))*0.06;
+          playerVel = ((playerX-window.innerWidth*0.75)/(window.innerWidth/40))*0.06;
         }
         if ( device == "Mobile" ) {
-          jumpVel = -((playerY-window.innerHeight)/(window.innerHeight/20))*0.06;
+          jumpVel = ((playerY-window.innerHeight*0.75)/(window.innerHeight/40))*0.06;
         }
         if ( DOon == true ) {
           if ( alpha > 180 ) {
