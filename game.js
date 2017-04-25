@@ -93,7 +93,7 @@ function touchEnded() {
   //controls = new THREE.OrbitControls( camera, renderer.domElement );
   //controls.enableZoom = true;
   //controls.enablePan = true;
-  var crystgeo = new THREE.SphereBufferGeometry( 0.5, 4, 2 );
+  var crystgeo = new THREE.SphereBufferGeometry( 1, 4, 2 );
   var crystmat = new THREE.MeshLambertMaterial( { color: "rgb(15,15,15)", reflectivity: 0.1 } );
   var cryst = new THREE.Mesh( crystgeo, crystmat );
   cryst.position.y = 150;
@@ -103,7 +103,8 @@ function touchEnded() {
 
   var size;
   var geom;
-  var mate = new THREE.MeshLambertMaterial( {color: "rgb(25,25,255)" } );
+  var text = new THREE.TextureLoader().load( "ast_texture.jpg" );
+  var mate = new THREE.MeshLambertMaterial( { map: text } );
   var blocks = [];
   for ( var i = 0; i < 100; i++ ) {
     size = Math.floor( Math.random( 2, 4 ) );
@@ -129,7 +130,11 @@ function touchEnded() {
   scene.add( border2 );
 
   var planegeo = new THREE.PlaneBufferGeometry( 750, 750 );
-  var planemat = new THREE.MeshLambertMaterial( { color: "rgb(255,255,255)", side: THREE.DoubleSide } );
+  var planetext = new THREE.TextureLoader().load( "wall_texture.jpg " );
+  planetext.wrapS = THREE.RepeatWrapping;
+  planetext.wrapT = THREE.RepeatWrapping;
+  planetext.repeat.set( 400, 400 );
+  var planemat = new THREE.MeshLambertMaterial( { map: planetext , side: THREE.DoubleSide } );
   var plane1 = new THREE.Mesh( planegeo, planemat );
   plane1.position.set( 0, 0, -25 );
   scene.add( plane1 );
@@ -153,17 +158,41 @@ function touchEnded() {
   scene.add( light );
 
   var lpoint = new THREE.Mesh( new THREE.SphereBufferGeometry( 0.25, 10, 10 ), new THREE.MeshLambertMaterial( { color: "rgb(255,255,255)"} ));
+  lpoint.visible = false;
   scene.add( lpoint );
 
-  var thrustlight = new THREE.PointLight( "rgb(55,55,55)", 3, 10, 2 );
+  var thrustlight = new THREE.PointLight( "rgb(55,55,55)", 30, 100, 2 );
   thrustlight.position.y = light.position.y - 2;
   scene.add( thrustlight );
 
-  var wingsgeo = new THREE.RingBufferGeometry( 0.001, 0.75, 1, 1, Math.radians(90), 6.3 );
-  var wingsmat = new THREE.MeshLambertMaterial( { color: "rgb(255,255,255)" } );
-  var wings = new THREE.Mesh( wingsgeo, wingsmat );
-  wings.position.set( lpoint.position.x, lpoint.position.y, lpoint.position.z );
-  scene.add( wings );
+  var manager = new THREE.LoadingManager();
+	manager.onProgress = function ( item, loaded, total ) {
+			console.log( item, loaded, total );
+		};
+		var texture = new THREE.Texture();
+		var onProgress = function ( xhr ) {
+			if ( xhr.lengthComputable ) {
+				var percentComplete = xhr.loaded / xhr.total * 100;
+				console.log( Math.round(percentComplete, 2) + '% downloaded' );
+			}
+		};
+		var onError = function ( xhr ) {
+		};
+    var texture = new THREE.MeshLambertMaterial( { color: "rgb(10,10,10)" } );
+		// model
+		var loader = new THREE.OBJLoader( manager );
+		loader.load( 'ship.obj', function ( object ) {
+			object.traverse( function ( child ) {
+				if ( child instanceof THREE.Mesh ) {
+					child.material = texture;
+				}
+			} );
+			object.scale.set( 0.01, 0.01, 0.01 );
+      object.rotation.z = 6.3/2;
+			object.name = "ship";
+			object.position.y = - 55;
+			scene.add( object );
+		}, onProgress, onError );
 
   var sheildgeo = new THREE.SphereBufferGeometry( 0.5, 36, 36 );
   var sheildmat = new THREE.MeshBasicMaterial ( { color: "rgb(55,55,255)", transparent: true,opacity: 0 } );
@@ -232,9 +261,9 @@ function touchEnded() {
         for ( var i = 0; i < thrust.length; i++ ) {
           thrust[i].position.y -= 0.1;
           //thrust[i].position.z = lpoint.position.z;
-          thrust[i].material.opacity = thrustlight.intensity/100;
+          thrust[i].material.opacity = thrustlight.intensity/50;
           if ( thrust[i].position.y < -5 ) {
-            thrust[i].position.y = lpoint.position.y - 0.0;
+            thrust[i].position.y = lpoint.position.y + 0.3;
             thrust[i].position.x = lpoint.position.x + ( Math.random() - 0.5 ) * 0.25;
             thrust[i].position.z = lpoint.position.z-0.1;
           }
@@ -244,10 +273,12 @@ function touchEnded() {
         if ( cryst.position.y < -25 ) {
           cryst.position.y = 75;
           cryst.position.x = ( Math.random() - 0.5 ) * 25;
+          cryst.position.z = ( Math.random() - 0.5 ) * 25;
         }
-        if ( dist( cryst.position.x, cryst.position.y, cryst.position.z, light.position.x, light.position.y, light.position.z ) < 1.75) {
+        if ( dist( cryst.position.x, cryst.position.y, cryst.position.z, light.position.x, light.position.y, light.position.z ) < 2.75) {
           cryst.position.y = 50;
           cryst.position.x = ( Math.random() - 0.5 ) * 25;
+          cryst.position.z = ( Math.random() - 0.5 ) * 25;
           lvlSpeed += 0.4;
           if ( lives < 100 ) {
             lives += 5;
@@ -279,7 +310,7 @@ function touchEnded() {
           jumpVel *= 0.9;
         }
         if ( device == "Mobile" ) {
-          playerVel = ((playerX+window.innerWidth/2)/(window.innerWidth/40))*0.06;
+          playerVel = ((playerX-window.innerWidth/2)/(window.innerWidth/40))*0.06;
         }
         if ( device == "Mobile" ) {
           jumpVel = ((playerY-window.innerHeight*0.75)/(window.innerHeight/40))*0.06;
@@ -304,15 +335,27 @@ function touchEnded() {
         }
         if ( light.position.x > 24 ) {
           light.position.x = 24;
+          playerVel *= -1;
+          lives -= 10;
+          sheild.material.opacity = lives/100;
         }
         if ( light.position.x < -24 ) {
           light.position.x = -24;
+          playerVel *= -1;
+          lives -= 10;
+          sheild.material.opacity = lives/100;
         }
         if ( light.position.z > 24 ) {
           light.position.z = 24;
+          jumpVel *= -1;
+          lives -= 10;
+          sheild.material.opacity = lives/100;
         }
         if ( light.position.z < -24 ) {
           light.position.z = -24;
+          jumpVel *= -1;
+          lives -= 10;
+          sheild.material.opacity = lives/100;
         }
         if ( sheild.material.opacity > 0 ) {
           sheild.material.opacity *= 0.9;
@@ -323,15 +366,19 @@ function touchEnded() {
         else {
           sheild.material.color.set("rgb(55,55,255)");
         }
-        lpoint.position.set(light.position.x,light.position.y-1,light.position.z-0.1);
+        lpoint.position.set(light.position.x,light.position.y-2,light.position.z-0.1);
         light.position.x += playerVel;
         light.position.z += jumpVel;
-        wings.position.set( lpoint.position.x, lpoint.position.y, lpoint.position.z );
-        wings.rotation.y = playerVel;
-        wings.rotation.z = -playerVel/10;
-        wings.rotation.x = jumpVel*0.75;
+        for ( var i = 0; i < scene.children.length; i++ ) {
+					if ( scene.children[i].name == "ship" ) {
+						scene.children[i].position.set( lpoint.position.x+0.08, lpoint.position.y+1, lpoint.position.z );
+						scene.children[i].rotation.y = playerVel;
+            scene.children[i].rotation.y = playerVel;
+            scene.children[i].rotation.x = jumpVel*0.75;
+					}
+				}
         thrustlight.position.x = lpoint.position.x;
-        thrustlight.position.y = lpoint.position.y - 2 - lvlSpeed;
+        thrustlight.position.y = lpoint.position.y - 1.5;
         thrustlight.position.z = lpoint.position.z;
         thrustlight.intensity = lvlSpeed * 5;
         camera.position.z = -lpoint.position.x;
@@ -342,7 +389,7 @@ function touchEnded() {
         //camera.rotation.y = -jumpVel;
         //camera.position.y = (lpoint.position.z+2);
         sheild.position.x = lpoint.position.x;
-        sheild.position.y = lpoint.position.y;
+        sheild.position.y = lpoint.position.y+1;
         sheild.position.z = lpoint.position.z;
         score += lvlSpeed;
         document.getElementById("score").innerHTML = Math.floor(score) + " meters";
